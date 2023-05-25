@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Jogo de Adivinhação</title>
+  <link rel="stylesheet" type="text/css" href="syler.css">
+</head>
+<body>
+  <h1>Jogo de Adivinhação</h1>
+ 
+  <br> 
+  <div class="container" align="center">
+  
+    <img src="gifLa.gif"/>
+	<br> <br>
+    <p> <b>Estou pensando em um número de entre 0 e 100... Tente advinhar qual! </b></p>
+    <label for="guess">Digite o seu palpite:</label>
+	<br>
+    <input type="number" id="guess" min="0" max="100">
+    <button onclick="checkGuess()">Verificar</button>
+    <p id="result"></p>
+    <p id="score"></p>
+    <button onclick="newGame()">Novo Jogo</button>
+	<br>
+    <ul id="attempts"></ul>
+	
+  </div>
+
+  <script>
+    var randomNumber;
+    var attempts = [];
+    var result = document.getElementById('result');
+    var scoreElement = document.getElementById('score');
+    var attemptsList = document.getElementById('attempts');
+    var guessInput = document.getElementById('guess');
+    var score = 100;
+
+    function startNewGame() {
+      randomNumber = Math.floor(Math.random() * 101);
+      attempts = [];
+      result.textContent = '';
+      attemptsList.innerHTML = '';
+      guessInput.value = '';
+      guessInput.disabled = false;
+      score = 100;
+      updateScore();
+    }
+
+    function checkGuess() {
+      var guess = parseInt(guessInput.value);
+
+      if (isNaN(guess) || guess < 0 || guess > 100) {
+        result.textContent = 'NÚMEROS DE 0 A 100 SEU IDIOTA!';
+        return;
+      }
+
+      attempts.push(guess);
+
+      if (guess === randomNumber) {
+        result.textContent = 'Parabéns! Você acertou o número!';
+        guessInput.disabled = true;
+        score += 1;
+      } else if (guess < randomNumber) {
+        result.textContent = 'Tente um número maiorzinho.';
+        score -= 1;
+      } else {
+        result.textContent = 'Tente um número menorzinho.';
+        score -= 1;
+      }
+
+      if (score <= 0) {
+        result.textContent = 'Você perdeu! :( O número correto era ' + randomNumber + '.';
+        guessInput.disabled = true;
+      }
+
+      updateScore();
+      displayAttempts();
+    }
+
+    function updateScore() {
+      scoreElement.textContent = 'Pontuação: ' + score;
+    }
+
+    function displayAttempts() {
+      attemptsList.innerHTML = '';
+
+      for (var i = 0; i < attempts.length; i++) {
+        var li = document.createElement('li');
+        li.textContent = 'Tentativa ' + (i + 1) + ': ' + attempts[i];
+        attemptsList.appendChild(li);
+      }
+    }
+
+    function newGame() {
+      startNewGame();
+    }
+
+    // Iniciar um novo jogo ao carregar a página
+    startNewGame();
+  </script>
+</body>
+</html>
